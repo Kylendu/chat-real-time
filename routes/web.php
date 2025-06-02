@@ -23,8 +23,6 @@ Route::get('/chat/{id}', function ($id){
 
 })->middleware(['auth', 'verified'])->name('chat');
 
-
-
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
