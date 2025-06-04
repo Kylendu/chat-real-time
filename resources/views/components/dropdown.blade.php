@@ -1,7 +1,7 @@
 @props([
     'align' => 'right',
     'width' => '64',
-    'contentClasses' => 'py-2 bg-white shadow-lg border border-gray-200 rounded-xl',
+    'contentClasses' => 'py-2 bg-white z-50 shadow-lg border border-gray-200 rounded-xl',
 ])
 
 @php

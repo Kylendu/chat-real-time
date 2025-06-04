@@ -44,6 +44,15 @@ new class extends Component {
                         </svg>
                         {{ __('Conversations') }}
                     </x-nav-link>
+
+                    <x-nav-link :href="route('global-chat')" :active="request()->routeIs('global-chat')" wire:navigate
+                        class="inline-flex items-center px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2v-2M3 4h14v10H7l-4 4V4z" />
+                        </svg>
+                        {{ __('Global Chat') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -112,6 +121,9 @@ new class extends Component {
         <div class="pt-2 pb-3 space-y-1 px-4">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Conversations') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('global-chat')" :active="request()->routeIs('global-chat')" wire:navigate>
+                {{ __('Global Chat') }}
             </x-responsive-nav-link>
         </div>
 

@@ -1,7 +1,6 @@
-<div class="flex flex-col h-screen bg-gray-50 relative overflow-hidden">
+<div class="flex flex-col h-screen bg-gray-50 z-50 relative overflow-hidden">
     <div class="absolute inset-0 opacity-20">
-        <div
-            class="absolute top-10 left-10 w-20 h-20 bg-blue-200 rounded-full filter blur-xl animate-slow-fade">
+        <div class="absolute top-10 left-10 w-20 h-20 bg-blue-200 rounded-full filter blur-xl animate-slow-fade">
         </div>
         <div
             class="absolute top-32 right-20 w-16 h-16 bg-purple-200 rounded-full filter blur-xl animate-slow-fade delay-500">
@@ -58,7 +57,8 @@
                             class="w-9 h-9 bg-gradient-to-br from-indigo-400 to-purple-400 rounded-full flex items-center justify-center flex-shrink-0 ring-1 ring-white">
                             <span class="text-white font-semibold text-xs">{{ substr($message['sender'], 0, 1) }}</span>
                         </div>
-                        <div class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border border-white">
+                        <div
+                            class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border border-white">
                         </div>
                     </div>
                     <div class="flex-1">
@@ -69,7 +69,8 @@
                         <div class="flex items-center space-x-2 mt-1 ml-1 text-xs text-gray-500">
                             <p class="font-medium">{{ $message['sender'] }}</p>
                             <span>&bull;</span>
-                            <p>{{ now()->format('H:i') }}</p>
+                            <p>{{ \Carbon\Carbon::parse($message['created_at'])->timezone('Asia/Jakarta')->format('H:i') }}
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -77,8 +78,7 @@
                 <div class="flex items-start justify-end space-x-3 animate-fade-in">
                     <div class="flex-1 flex justify-end">
                         <div class="relative">
-                            <div
-                                class="bg-blue-500 rounded-xl rounded-tr-md px-4 py-3 shadow-sm max-w-sm">
+                            <div class="bg-blue-500 rounded-xl rounded-tr-md px-4 py-3 shadow-sm max-w-sm">
                                 <p class="text-sm text-white leading-normal">{{ $message['message'] }}</p>
                             </div>
                             <div class="flex items-center justify-end space-x-2 mt-1 mr-1 text-xs text-gray-300">
@@ -87,7 +87,8 @@
                                         d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
                                         clip-rule="evenodd" />
                                 </svg>
-                                <p>{{ now()->format('H:i') }}</p>
+                                <p>{{ \Carbon\Carbon::parse($message['created_at'])->timezone('Asia/Jakarta')->format('H:i') }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -96,48 +97,29 @@
         @endforeach
     </div>
 
-    <form wire:submit="sendMessage()"
-        class="sticky bottom-0 bg-white border-t border-gray-200 p-4 shadow-md">
-        <div class="flex items-end space-x-3">
+    <form wire:submit="sendMessage()" class="sticky bottom-0 bg-white border-t border-gray-200 p-4 shadow-md">
+        <div class="flex justify-between items-center space-x-3">
             <button type="button"
                 class="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition-all duration-200">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                </svg>
+                <x-icons.file class="w-5 h-5" />
             </button>
 
             <div class="flex-1 relative">
-                <textarea wire:model="message" placeholder="Type your message..." rows="1"
+                <textarea wire:model="message" placeholder="Ketik pesan..." rows="1" id="textMessage"
                     class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-2xl resize-none text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-300 focus:bg-white transition-all duration-200"
                     style="outline: none;" required></textarea>
 
                 <button type="button"
                     class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                    <x-icons.emoji class="w-5 h-5" />
                 </button>
             </div>
 
             <button type="submit"
                 class="flex items-center justify-center w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-all duration-200 transform hover:scale-105 active:scale-95"
                 style="outline: none;">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
+                <x-icons.send class="w-5 h-5" />
             </button>
-        </div>
-
-        <div class="flex items-center space-x-2 mt-2 ml-2 text-sm text-gray-500 opacity-0 transition-opacity duration-300">
-            <div class="flex space-x-1">
-                <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: -0.3s;"></div>
-                <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style="animation-delay: -0.15s;"></div>
-                <div class="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"></div>
-            </div>
-            <span>Someone is typing...</span>
         </div>
     </form>
 </div>

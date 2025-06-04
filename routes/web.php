@@ -1,26 +1,15 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
 
 Route::view('/', 'welcome');
 
-Route::get('/dashboard', function () {
-
-    $users = User::where('id', '!=', Auth::user()->id)->get();
-
-    return view('dashboard', [
-        'users' => $users
-    ]);
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-Route::get('/chat/{id}', function ($id) {
-
-    return view('chat', [
-        'id' => $id
-    ]);
-})->middleware(['auth', 'verified'])->name('chat');
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/dashboard', [ChatController::class, 'index'])->name('dashboard');
+    Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat');
+    Route::get('/global-chat', [ChatController::class, 'globalChat'])->name('global-chat');
+});
 
 Route::view('profile', 'profile')
     ->middleware(['auth'])

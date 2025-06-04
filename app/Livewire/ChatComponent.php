@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Events\MessageSendEvent;
 use App\Models\User;
 use App\Models\Message;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -23,22 +24,21 @@ class ChatComponent extends Component
 
     public function mount($user_id)
     {
-        $this->sender_id = auth()->user()->id;
+        $this->sender_id = Auth::user()->id;
         $this->receiver_id = $user_id;
 
-        $messages = Message::where(function($query){
+        $messages = Message::where(function ($query) {
             $query->where('sender_id', $this->sender_id)
-                  ->where('receiver_id', $this->receiver_id);
-        })->orWhere(function($query){
+                ->where('receiver_id', $this->receiver_id);
+        })->orWhere(function ($query) {
             $query->where('sender_id', $this->receiver_id)
-                  ->where('receiver_id', $this->sender_id);
+                ->where('receiver_id', $this->sender_id);
         })
-        ->with('sender:id,name', 'receiver:id,name')->get();
+            ->with('sender:id,name', 'receiver:id,name')->get();
 
         // dd($messages->toArray());
 
-        foreach ($messages as $message) 
-        {
+        foreach ($messages as $message) {
             $this->appendChatMessage($message);
         }
 
@@ -83,6 +83,8 @@ class ChatComponent extends Component
             'message' => $message->message,
             'sender' => $message->sender->name,
             'receiver' => $message->receiver->name,
+            'created_at' => $message->created_at,
+            'updated_at' => $message->updated_at,
         ];
     }
 }
