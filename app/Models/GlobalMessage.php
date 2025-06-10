@@ -8,10 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class GlobalMessage extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         'user_id',
         'message',
+        'file_path',
+        'file_name',
+        'file_type',
+        'file_size',
     ];
 
     protected $casts = [

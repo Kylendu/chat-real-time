@@ -16,6 +16,10 @@ return new class extends Migration
             $table->foreignId('sender_id');
             $table->foreignId('receiver_id');
             $table->longText('message');
+            $table->string('file_path')->nullable();
+            $table->string('file_name')->nullable();
+            $table->string('file_type')->nullable();
+            $table->bigInteger('file_size')->nullable();
             $table->timestamps();
         });
     }

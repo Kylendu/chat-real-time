@@ -13,6 +13,10 @@ class Message extends Model
         'sender_id',
         'receiver_id',
         'message',
+        'file_path',
+        'file_name',
+        'file_type',
+        'file_size',
     ];
 
     protected $casts = [

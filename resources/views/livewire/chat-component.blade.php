@@ -80,6 +80,13 @@
                         <div
                             class="bg-white rounded-xl rounded-tl-md px-4 py-3 shadow-sm border border-gray-100 max-w-sm">
                             <p class="text-sm text-gray-800 leading-normal">{{ $message['message'] }}</p>
+
+                            @if ($message['file_path'])
+                                <div class="mt-2 pt-2 border-t border-gray-100">
+                                    <x-file-attachment :file-path="$message['file_path']" :file-name="$message['file_name'] ?? 'Attachment'" :file-type="$message['file_type'] ?? ''"
+                                        :file-size="$message['file_size'] ?? 0" :is-outgoing="false" />
+                                </div>
+                            @endif
                         </div>
                         <div class="flex items-center space-x-2 mt-1 ml-1 text-xs text-gray-500">
                             <p class="font-medium">{{ $message['sender'] }}</p>
@@ -95,7 +102,15 @@
                         <div class="relative">
                             <div class="bg-blue-500 rounded-xl rounded-tr-md px-4 py-3 shadow-sm max-w-sm">
                                 <p class="text-sm text-white leading-normal">{{ $message['message'] }}</p>
+
+                                @if ($message['file_path'])
+                                    <div class="mt-2 pt-2 border-t border-blue-400">
+                                        <x-file-attachment :file-path="$message['file_path']" :file-name="$message['file_name'] ?? 'Attachment'" :file-type="$message['file_type'] ?? ''"
+                                            :file-size="$message['file_size'] ?? 0" :is-outgoing="true" />
+                                    </div>
+                                @endif
                             </div>
+
                             <div class="flex items-center justify-end space-x-2 mt-1 mr-1 text-xs text-gray-300">
                                 <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
@@ -114,15 +129,22 @@
 
     <form wire:submit="sendMessage()" class="sticky bottom-0 bg-white border-t border-gray-200 p-4 shadow-md">
         <div class="flex justify-between items-center space-x-3">
-            <button type="button"
-                class="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition-all duration-200">
-                <x-icons.file class="w-5 h-5" />
-            </button>
+            <div>
+                <input type="file" wire:model="attachment" id="attachment" class="hidden"
+                    accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.txt,.zip,.rar" />
+                <label for="attachment"
+                    class="flex items-center justify-center w-10 h-10 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-full transition-all duration-200 cursor-pointer">
+                    <x-icons.file class="w-5 h-5" />
+                </label>
+                <div wire:loading wire:target="attachment" class="mt-1 text-xs text-gray-600">
+                    Uploading...
+                </div>
+            </div>
 
             <div class="flex-1 relative">
                 <textarea wire:model="message" placeholder="Ketik pesan..." rows="1" id="textMessage"
                     class="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-2xl resize-none text-gray-800 placeholder-gray-500 focus:ring-2 focus:ring-blue-300 focus:bg-white transition-all duration-200"
-                    style="outline: none;" required></textarea>
+                    style="outline: none;"></textarea>
 
                 <button type="button"
                     class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors duration-200">
@@ -130,11 +152,40 @@
                 </button>
             </div>
 
-            <button type="submit"
-                class="flex items-center justify-center w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-all duration-200 transform hover:scale-105 active:scale-95"
+            <button type="submit" wire:loading.attr="disabled" wire:loading.class="opacity-75"
+                class="flex items-center justify-center w-12 h-12 bg-blue-500 hover:bg-blue-600 text-white rounded-full transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed"
                 style="outline: none;">
                 <x-icons.send class="w-5 h-5" />
             </button>
         </div>
+
+        @if ($attachment)
+            <div class="mt-2 p-2 bg-gray-100 rounded-lg flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <span class="text-blue-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                        </svg>
+                    </span>
+                    <span class="text-sm truncate">{{ $attachment->getClientOriginalName() }}</span>
+                </div>
+                <button type="button" wire:click="$set('attachment', null)"
+                    class="text-gray-500 hover:text-red-500">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+        @endif
+
+        @error('message')
+            <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+        @enderror
+
+        @error('attachment')
+            <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
+        @enderror
     </form>
 </div>
