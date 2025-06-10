@@ -1,23 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-900">
-                    {{ __('Percakapan') }}
-                </h2>
-                <p class="mt-1 text-sm text-gray-600">
-                    Mulai mengobrol dengan orang di sekitar Anda
-                </p>
-            </div>
-            <div class="flex items-center space-x-3">
-                <div class="flex items-center px-3 py-2 bg-green-50 rounded-full">
-                    <div class="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
-                    <span class="text-sm font-medium text-green-700">Online</span>
-                </div>
-            </div>
-        </div>
-    </x-slot>
-
     <div class="py-6">
         <div class="max-w-4xl px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -33,10 +14,18 @@
                                 wire:navigate.hover>
 
                                 <div class="relative flex-shrink-0">
-                                    <div
-                                        class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-sm">
-                                        <span
-                                            class="text-white font-semibold text-sm">{{ substr($user->name, 0, 1) }}</span>
+                                    <div class="w-12 h-12 rounded-full flex items-center justify-center shadow-sm">
+                                        @if ($user->profile_photo)
+                                            <img src="{{ asset('storage/' . $user->profile_photo) }}"
+                                                alt="{{ $user->name }}"
+                                                class="rounded-full w-full h-full object-cover">
+                                        @else
+                                            <div
+                                                class="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                                <span
+                                                    class="text-xs font-semibold text-white">{{ substr($user->name, 0, 1) }}</span>
+                                            </div>
+                                        @endif
                                     </div>
                                     <div
                                         class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 rounded-full border-2 border-white dark:border-slate-800">

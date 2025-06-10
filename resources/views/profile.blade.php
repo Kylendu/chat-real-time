@@ -1,28 +1,10 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center space-x-4">
-            <div
-                class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-sm">
-                <span class="text-white font-semibold text-lg">{{ substr(auth()->user()->name, 0, 1) }}</span>
-            </div>
-            <div>
-                <h2 class="text-2xl font-bold text-gray-900">
-                    {{ __('Profile Settings') }}
-                </h2>
-                <p class="mt-1 text-sm text-gray-600">
-                    Manage your account settings and preferences
-                </p>
-            </div>
-        </div>
-    </x-slot>
-
     <div class="py-6">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div class="p-6 border-b border-gray-200">
                     <h3 class="text-lg font-semibold text-gray-900 flex items-center">
-                        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor"
-                            viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>

@@ -20,7 +20,7 @@ class GlobalChatComponent extends Component
 
     public function loadMessages()
     {
-        $messages = GlobalMessage::with('user:id,name')
+        $messages = GlobalMessage::with('user:id,name,profile_photo')
             ->latest()
             ->limit(50)
             ->get()
@@ -32,6 +32,7 @@ class GlobalChatComponent extends Component
                 'message' => $message->message,
                 'user_name' => $message->user->name,
                 'user_id' => $message->user_id,
+                'profile_photo' => $message->user->profile_photo,
                 'created_at' => $message->created_at,
                 'is_mine' => $message->user_id === Auth::id(),
             ];
@@ -49,13 +50,14 @@ class GlobalChatComponent extends Component
             'message' => $this->message,
         ]);
 
-        $globalMessage->load('user:id,name');
+        $globalMessage->load('user:id,name,profile_photo');
 
         $messageData = [
             'id' => $globalMessage->id,
             'message' => $globalMessage->message,
             'user_name' => $globalMessage->user->name,
             'user_id' => $globalMessage->user_id,
+            'profile_photo' => $globalMessage->user->profile_photo,
             'created_at' => $globalMessage->created_at,
             'is_mine' => true,
         ];
@@ -70,7 +72,7 @@ class GlobalChatComponent extends Component
     #[On('echo:global-chat,GlobalMessageSentEvent')]
     public function listenForGlobalMessage($event)
     {
-        $globalMessage = GlobalMessage::with('user:id,name')
+        $globalMessage = GlobalMessage::with('user:id,name,profile_photo')
             ->find($event['message']['id']);
 
         if ($globalMessage && $globalMessage->user_id !== Auth::id()) {
@@ -79,6 +81,7 @@ class GlobalChatComponent extends Component
                 'message' => $globalMessage->message,
                 'user_name' => $globalMessage->user->name,
                 'user_id' => $globalMessage->user_id,
+                'profile_photo' => $globalMessage->user->profile_photo,
                 'created_at' => $globalMessage->created_at,
                 'is_mine' => false,
             ];

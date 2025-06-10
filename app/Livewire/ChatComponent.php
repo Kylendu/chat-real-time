@@ -34,7 +34,7 @@ class ChatComponent extends Component
             $query->where('sender_id', $this->receiver_id)
                 ->where('receiver_id', $this->sender_id);
         })
-            ->with('sender:id,name', 'receiver:id,name')->get();
+            ->with('sender:id,name,profile_photo', 'receiver:id,name,profile_photo')->get();
 
         // dd($messages->toArray());
 
@@ -70,7 +70,7 @@ class ChatComponent extends Component
         // dd($event);
 
         $chatMessage = Message::whereId($event['message']['id'])
-            ->with('sender:id,name', 'receiver:id,name')->get()
+            ->with('sender:id,name,profile_photo', 'receiver:id,name,profile_photo')->get()
             ->first();
 
         $this->appendChatMessage($chatMessage);
@@ -83,6 +83,7 @@ class ChatComponent extends Component
             'message' => $message->message,
             'sender' => $message->sender->name,
             'receiver' => $message->receiver->name,
+            'profile_photo' => $message->sender->profile_photo,
             'created_at' => $message->created_at,
             'updated_at' => $message->updated_at,
         ];

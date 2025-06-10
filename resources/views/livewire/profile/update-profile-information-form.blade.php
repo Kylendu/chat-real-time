@@ -5,10 +5,15 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Validation\Rule;
 use Livewire\Volt\Component;
+use Livewire\WithFileUploads;
 
 new class extends Component {
+    use WithFileUploads;
+
     public string $name = '';
     public string $email = '';
+    public $photo;
+    public $currentPhoto;
 
     /**
      * Mount the component.
@@ -17,6 +22,7 @@ new class extends Component {
     {
         $this->name = Auth::user()->name;
         $this->email = Auth::user()->email;
+        $this->currentPhoto = Auth::user()->profile_photo;
     }
 
     /**
@@ -29,17 +35,32 @@ new class extends Component {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
+            'photo' => ['nullable', 'image', 'max:1024'],
         ]);
 
-        $user->fill($validated);
+        $photoUpdated = false;
+        if ($this->photo) {
+            $photoPath = $this->photo->store('profile-photos', 'public');
+            $user->profile_photo = $photoPath;
+            $photoUpdated = true;
+        }
+
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
-
         $user->save();
 
         $this->dispatch('profile-updated', name: $user->name);
+        $this->currentPhoto = $user->profile_photo;
+        $this->photo = null;
+
+        // Refresh the page if photo was updated to update the header
+        if ($photoUpdated) {
+            $this->dispatch('refresh-page');
+        }
     }
 
     /**
@@ -73,10 +94,42 @@ new class extends Component {
     </header>
 
     <form wire:submit="updateProfileInformation" class="mt-6 space-y-6">
+        <!-- Profile Photo -->
+        <div>
+            <x-input-label for="photo" :value="__('Profile Photo')" />
+
+            <!-- Current Profile Photo -->
+            <div class="mt-2">
+                @if ($photo)
+                    <!-- Show temporary image preview when a new photo is selected -->
+                    <img src="{{ $photo->temporaryUrl() }}" alt="{{ __('Profile Photo Preview') }}"
+                        class="rounded-full h-20 w-20 object-cover">
+                @elseif ($currentPhoto)
+                    <img src="{{ asset('storage/' . $currentPhoto) }}" alt="{{ __('Profile Photo') }}"
+                        class="rounded-full h-20 w-20 object-cover">
+                @else
+                    <div class="rounded-full h-20 w-20 bg-gray-200 flex items-center justify-center">
+                        <span class="text-gray-500">{{ substr($name, 0, 1) }}</span>
+                    </div>
+                @endif
+            </div>
+
+            <!-- New Profile Photo -->
+            <div class="mt-2">
+                <x-text-input wire:model.live="photo" id="photo" name="photo" type="file"
+                    class="mt-1 block w-full" accept="image/*" />
+                <div wire:loading wire:target="photo" class="mt-2 text-sm text-gray-600">
+                    {{ __('Uploading...') }}
+                </div>
+            </div>
+
+            <x-input-error class="mt-2" :messages="$errors->get('photo')" />
+        </div>
+
         <div>
             <x-input-label for="name" :value="__('Name')" />
-            <x-text-input wire:model="name" id="name" name="name" type="text" class="mt-1 block w-full" required
-                autofocus autocomplete="name" />
+            <x-text-input wire:model="name" id="name" name="name" type="text" class="mt-1 block w-full"
+                required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
@@ -114,4 +167,12 @@ new class extends Component {
             </x-action-message>
         </div>
     </form>
+
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            @this.on('refresh-page', () => {
+                window.location.reload();
+            });
+        });
+    </script>
 </section>

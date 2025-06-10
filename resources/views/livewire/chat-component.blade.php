@@ -21,9 +21,16 @@
 
             <div class="flex items-center space-x-3">
                 <div class="relative">
-                    <div
-                        class="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full flex items-center justify-center ring-2 ring-white">
-                        <span class="text-white font-semibold text-sm">{{ substr($user->name, 0, 1) }}</span>
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-sm overflow-hidden">
+                        @if ($user->profile_photo)
+                            <img src="{{ asset('storage/' . $user->profile_photo) }}" alt="{{ $user->name }}"
+                                class="w-full h-full object-cover">
+                        @else
+                            <div
+                                class="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                <span class="text-xs font-semibold text-white">{{ substr($user->name, 0, 1) }}</span>
+                            </div>
+                        @endif
                     </div>
                     <div
                         class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 rounded-full border-2 border-white">
@@ -53,9 +60,17 @@
             @if ($message['sender'] != auth()->user()->name)
                 <div class="flex items-start space-x-3 animate-fade-in">
                     <div class="relative">
-                        <div
-                            class="w-9 h-9 bg-gradient-to-br from-indigo-400 to-purple-400 rounded-full flex items-center justify-center flex-shrink-0 ring-1 ring-white">
-                            <span class="text-white font-semibold text-xs">{{ substr($message['sender'], 0, 1) }}</span>
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center shadow-sm overflow-hidden">
+                            @if ($message['profile_photo'] ?? null)
+                                <img src="{{ asset('storage/' . $message['profile_photo']) }}"
+                                    alt="{{ $message['sender'] }}" class="w-full h-full object-cover">
+                            @else
+                                <div
+                                    class="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                    <span
+                                        class="text-xs font-semibold text-white">{{ substr($message['sender'], 0, 1) }}</span>
+                                </div>
+                            @endif
                         </div>
                         <div
                             class="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-400 rounded-full border border-white">

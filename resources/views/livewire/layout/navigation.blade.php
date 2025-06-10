@@ -63,9 +63,17 @@ new class extends Component {
                         <button
                             class="flex items-center space-x-3 px-4 py-2 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors duration-200">
                             <div
-                                class="w-8 h-8 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center shadow-sm">
-                                <span
-                                    class="text-xs font-semibold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
+                                class="w-8 h-8 rounded-full flex items-center justify-center shadow-sm overflow-hidden">
+                                @if (auth()->user()->profile_photo)
+                                    <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
+                                        alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                                @else
+                                    <div
+                                        class="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                                        <span
+                                            class="text-xs font-semibold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
+                                    </div>
+                                @endif
                             </div>
                             <div class="text-left">
                                 <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name"
@@ -129,10 +137,24 @@ new class extends Component {
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
-            <div class="px-4 pb-2">
-                <div class="font-medium text-base text-gray-800" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name"
-                    x-on:profile-updated.window="name = $event.detail.name"></div>
-                <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>
+            <div class="px-4 pb-2 flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shadow-sm overflow-hidden">
+                    @if (auth()->user()->profile_photo)
+                        <img src="{{ asset('storage/' . auth()->user()->profile_photo) }}"
+                            alt="{{ auth()->user()->name }}" class="w-full h-full object-cover">
+                    @else
+                        <div
+                            class="w-full h-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center">
+                            <span
+                                class="text-sm font-semibold text-white">{{ substr(auth()->user()->name, 0, 1) }}</span>
+                        </div>
+                    @endif
+                </div>
+                <div class="flex-1">
+                    <div class="font-medium text-base text-gray-800" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name"
+                        x-on:profile-updated.window="name = $event.detail.name"></div>
+                    <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>
+                </div>
             </div>
 
             <div class="mt-3 space-y-1 px-4">
